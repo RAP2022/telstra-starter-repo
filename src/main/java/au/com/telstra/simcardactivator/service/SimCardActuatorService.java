@@ -1,6 +1,5 @@
 package au.com.telstra.simcardactivator.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,11 +10,15 @@ import au.com.telstra.simcardactivator.model.ActuatorResponse;
 @Service
 public class SimCardActuatorService {
 
-	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
-	@Value("${backend.server.url:http://localhost:8444/actuate}")
-	String backendUrl;
+	public SimCardActuatorService(RestTemplate restTemplate) {
+		super();
+		this.restTemplate = restTemplate;
+	}
+
+	@Value("#{systemProperties['backend.server.url'] ?: 'http://localhost:8444/actuate'}") 
+	private String backendUrl;
 
 	public Boolean activateSimCard(String iccid) {
 		ActuatorRequest req = new ActuatorRequest();
@@ -23,7 +26,7 @@ public class SimCardActuatorService {
 		
 		ActuatorResponse rsp = restTemplate.postForObject(backendUrl, req, ActuatorResponse.class);
 
-		return rsp.getSuccess();
+		return (rsp != null && rsp.getSuccess() );
 	}
 
 }

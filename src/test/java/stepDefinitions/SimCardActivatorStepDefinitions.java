@@ -41,13 +41,13 @@ public class SimCardActivatorStepDefinitions {
     	ActivateRequest req = new ActivateRequest();
     	req.setIccid(simCardId).setCustomerEmail("test@test.com");
     	restTemplate.postForObject(backendUrl+"activate", req, SimCard.class);
-        this.id++;
+        SimCardActivatorStepDefinitions.id++;
     }
     
     @Then("The activate status should be {string}")
     public void i_should_be_told(String expectedStatus) {
-    	System.out.println( this.id);
-    	SimCard rsp = restTemplate.getForObject(backendUrl+"?simCardId=" + this.id, SimCard.class);
+    	System.out.println( SimCardActivatorStepDefinitions.id);
+    	SimCard rsp = restTemplate.getForObject(backendUrl+"?simCardId=" + SimCardActivatorStepDefinitions.id, SimCard.class);
     	status = rsp.getActive().toString();
 
         assertEquals(expectedStatus, status);

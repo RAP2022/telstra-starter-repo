@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +18,16 @@ import au.com.telstra.simcardactivator.service.SimCardActuatorService;
 @RestController
 public class SimCardActivate {
 
-	@Autowired
-	SimCardActuatorService simCardActuatorService;
-	
-	@Autowired	
+
+	private SimCardActuatorService simCardActuatorService;
 	private SimCardRepository simCardRepo;
+	
+	
+	public SimCardActivate(SimCardActuatorService simCardActuatorService, SimCardRepository simCardRepo) {
+		super();
+		this.simCardActuatorService = simCardActuatorService;
+		this.simCardRepo = simCardRepo;
+	}
 
 	@PostMapping({ "/activate" })
 	public SimCard handleActicvateRequest(@RequestBody @Valid ActivateRequest request) {
@@ -33,7 +37,6 @@ public class SimCardActivate {
 		SimCard simcard = new SimCard(request.getIccid(), request.getCustomerEmail());
 		simcard.setActive(result);
 		simcard = simCardRepo.save(simcard);
-		System.out.println(result);
 
 		return simcard;
 
